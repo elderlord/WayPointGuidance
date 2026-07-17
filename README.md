@@ -64,9 +64,12 @@
 ## 테스트
 
 ```bash
-npm test                 # Node 단위 로직 + QR 왕복 디코드 검증
-node test/e2e.mjs         # Chromium 전체 흐름 e2e (선형 게이트·진행도·리셋)
+npm test                 # Node 단위 로직 + QR 왕복 디코드 검증 (브라우저 불필요, CI에서 실행)
+npm run test:e2e         # Chromium 전체 흐름 e2e (선형 게이트·진행도·리셋) — 로컬 브라우저 필요
 ```
+
+> `npm test`는 `test/*.test.mjs` 단위 테스트만 수집합니다. e2e(`e2e/flow.mjs`)는 실제
+> 브라우저가 필요해 별도 실행하며 CI(`npm test`)에는 포함되지 않습니다.
 
 ## QR 생성 / 현장 배치
 

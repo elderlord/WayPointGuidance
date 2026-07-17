@@ -5,7 +5,8 @@
   "type": "module",
   "description": "기묘한 국중곽 : 21세기 도깨비 — QR 웨이포인트 스토리텔링 웹앱",
   "scripts": {
-    "test": "node --test"
+    "test": "node --test",
+    "test:e2e": "node e2e/flow.mjs"
   },
   "devDependencies": {
     "playwright-core": "^1.49.0",
