@@ -59,11 +59,20 @@
 - [x] 5. 진행 정책 모듈 (선형, 하이브리드 한 줄 스왑, `src/progression.js`)
 - [x] 6. 인앱 QR 스캐너 + NSM 토큰 매칭 + 선형 가드 (`src/scanner.js`, `src/tokens.js`)
 - [x] 7. 뷰 모듈화 (인라인 핸들러 제거, 이벤트 위임, `src/views.js`, `src/app.js`)
-- [ ] 8. QR 토큰 생성 + 현장 배치 문서 (NSM-0X → QR 이미지, 시작 QR)
+- [x] 8. QR 토큰 생성 + 현장 배치 문서 (`tools/generate-qr.mjs`, `qr/`, [배치 가이드](docs/QR-DEPLOYMENT.md))
 
 ## 테스트
 
 ```bash
-npm test                 # Node 순수 로직 단위 테스트
+npm test                 # Node 단위 로직 + QR 왕복 디코드 검증
 node test/e2e.mjs         # Chromium 전체 흐름 e2e (선형 게이트·진행도·리셋)
 ```
+
+## QR 생성 / 현장 배치
+
+```bash
+node tools/generate-qr.mjs --url https://<owner>.github.io/<repo>/
+```
+
+지점 QR(`NSM-0X`, 순수 토큰)과 시작 QR(배포 URL)을 `qr/`에 생성합니다.
+토큰↔지점 매핑·인쇄 사양·배치는 **[docs/QR-DEPLOYMENT.md](docs/QR-DEPLOYMENT.md)** 참조.
