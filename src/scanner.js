@@ -41,6 +41,12 @@ export function createScanner(video, onResult, onError) {
     }
   }
 
+  // 계속 스캔하되, 같은 코드가 프레임에 머무를 때 콜백이 폭주하지 않도록 쿨다운.
+  // 인식 성공 시에도 자동 정지하지 않는다 — 진행 여부는 app이 결정(맞으면 stop 호출).
+  let lastToken = null;
+  let lastEmit = 0;
+  const COOLDOWN_MS = 1500;
+
   function tick() {
     if (!running) return;
     if (video.readyState === video.HAVE_ENOUGH_DATA) {
@@ -50,13 +56,16 @@ export function createScanner(video, onResult, onError) {
       const img = ctx.getImageData(0, 0, canvas.width, canvas.height);
       const code = window.jsQR(img.data, img.width, img.height, { inversionAttempts: "dontInvert" });
       if (code && code.data) {
-        const token = code.data;
-        stop();
-        onResult?.(token);
-        return;
+        const now = typeof performance !== "undefined" ? performance.now() : 0;
+        // 새 코드거나 쿨다운이 지났을 때만 1회 통지
+        if (code.data !== lastToken || now - lastEmit > COOLDOWN_MS) {
+          lastToken = code.data;
+          lastEmit = now;
+          onResult?.(code.data); // app이 맞으면 stop()을 호출해 정지시킨다
+        }
       }
     }
-    raf = requestAnimationFrame(tick);
+    if (running) raf = requestAnimationFrame(tick); // onResult가 stop 했으면 재예약 안 함
   }
 
   function stop() {

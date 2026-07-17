@@ -57,6 +57,8 @@ function updateSoundUI() {
 }
 
 /* ---------- 스캐너 ---------- */
+let cameraEverStarted = false; // 한 번 켰으면 이후 스캔 화면에서 자동 재개
+
 function setupScanner() {
   const btn = document.getElementById("scanBtn");
   if (!scannerSupported() && btn) {
@@ -70,6 +72,12 @@ function setupScanner() {
       (token) => handleToken(token),
       (msg) => setScanMsg(msg)
     );
+    // 이전에 카메라를 켠 적 있으면(권한 이미 허용됨) 자동으로 다시 켜 스캔 재개
+    if (cameraEverStarted && scannerSupported()) {
+      scanner.start();
+      const st = document.getElementById("scanStatus");
+      if (st) st.textContent = "QR을 사각 안에 맞추세요…";
+    }
   }
 }
 function stopScanner() {
@@ -86,20 +94,34 @@ function setScanMsg(msg, kind) {
   }
 }
 
-/* ---------- 토큰 처리 (선형 가드) ---------- */
+/* ---------- 토큰 처리 (선형 가드: 지금 순서의 표식만 진행) ----------
+   현재 기대 지점(resolveEntry)과 일치하는 토큰에서만 이동한다.
+   그 외(모르는 코드 · 이미 푼 지점 · 앞선 지점)는 이동하지 않고 피드백만 주며
+   카메라는 계속 켜둔다 → 화면에 다른 QR이 잡혀도 문항이 튀지 않는다. */
 function handleToken(raw) {
   const { ok, stage } = resolveToken(raw, tokenMap);
+  const expected = resolveEntry(state, NODE_COUNT); // 지금 찾아야 할 지점
+
   if (!ok) {
-    setScanMsg("…그건 내 표식이 아니다. 다시 비추어 보아라.", "err");
+    setScanMsg("…그건 내 표식이 아니다. 다른 표식을 비추어라.", "err");
     return;
   }
-  if (!canAccess(stage, state, NODE_COUNT)) {
-    setScanMsg("크큭, 성급하구나. 아직 풀지 못한 조화가 남았다. 순서를 건너뛸 셈이냐?", "err");
+  if (stage === expected) {
+    stopScanner();
+    state.stage = stage;
+    saveState(state);
+    render();
     return;
   }
-  state.stage = stage;
-  saveState(state);
-  render();
+  // 알려진 토큰이지만 지금 순서가 아님 — 이동하지 않음
+  const behind =
+    (typeof stage === "number" && typeof expected === "number" && stage < expected) ||
+    (typeof stage === "number" && expected === "finale");
+  if (behind) {
+    setScanMsg("이미 밝혀낸 조화다. 다음 표식을 찾아라.", "err");
+  } else {
+    setScanMsg("크큭, 성급하구나. 순서대로 오너라. 아직 이 표식의 차례가 아니다.", "err");
+  }
 }
 
 /* ---------- 미션 응답 ---------- */
@@ -158,6 +180,7 @@ app.addEventListener("click", (e) => {
     saveState(state);
     render();
   } else if (act === "scan-start") {
+    cameraEverStarted = true;
     scanner?.start();
     setScanMsg("");
     const st = document.getElementById("scanStatus");
