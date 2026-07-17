@@ -8,6 +8,7 @@ import { loadState, saveState, resetState } from "./state.js";
 import { canAccess, resolveEntry, nextStage, setPolicy } from "./progression.js";
 import { buildTokenMap, resolveToken } from "./tokens.js";
 import { createScanner, scannerSupported } from "./scanner.js";
+import { initAudio, startAudio, toggleMuted, isMuted } from "./audio.js";
 import {
   renderPrologue,
   renderScanner,
@@ -39,7 +40,20 @@ function render() {
   else if (Number.isInteger(s)) app.innerHTML = renderNode(content, state, s);
   else app.innerHTML = renderPrologue(content, state);
 
+  updateSoundUI();
   if (s === "scan") setupScanner();
+}
+
+/* 소리 토글 버튼의 표시 상태를 현재 오디오 상태로 보정 */
+function updateSoundUI() {
+  const btn = document.getElementById("soundBtn");
+  const label = document.getElementById("soundLabel");
+  const m = isMuted();
+  if (btn) {
+    btn.classList.toggle("muted", m);
+    btn.setAttribute("aria-pressed", m ? "true" : "false");
+  }
+  if (label) label.textContent = m ? "소리 꺼짐" : "소리 켜짐";
 }
 
 /* ---------- 스캐너 ---------- */
@@ -130,7 +144,13 @@ function handleAnswer(idx) {
 app.addEventListener("click", (e) => {
   const el = e.target.closest("[data-act]");
   if (!el) return;
+  startAudio(); // 첫 사용자 제스처에서 BGM 시작(멱등, 자동재생 정책 대응)
   const act = el.dataset.act;
+  if (act === "toggle-sound") {
+    toggleMuted();
+    updateSoundUI();
+    return;
+  }
   if (act === "start") {
     const v = (document.getElementById("name").value || "").trim();
     state.name = v || content.meta.placeholderName;
@@ -174,6 +194,7 @@ if (!check.ok) {
     <b>콘텐츠 오류</b><br>${check.errors.map(esc).join("<br>")}</div>`;
   console.error("Invalid content:", check.errors);
 } else {
+  initAudio(content.meta.audio?.bgm);
   // 저장된 stage가 정책상 접근 불가하면 갈 수 있는 지점으로 되돌림
   if (
     state.stage !== "prologue" &&

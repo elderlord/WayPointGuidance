@@ -76,7 +76,7 @@ try {
   }
 
   // 4) 새로고침 후 진행도 유지(4노드 규명 상태 → 스캔 화면으로 복귀)
-  await page.reload({ waitUntil: "networkidle" });
+  await page.reload({ waitUntil: "load" });
   check("새로고침 후 진행도 유지(스캔 복귀)", (await page.locator("#token").count()) === 1);
 
   // 5) 클라이맥스 → 담력왕

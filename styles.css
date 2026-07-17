@@ -15,8 +15,11 @@ body{min-height:100dvh;display:flex;justify-content:center}
 /* --- shared bits --- */
 .top{display:flex;justify-content:space-between;align-items:center;margin:0 0 16px}
 .brand{font-size:11px;letter-spacing:.14em;color:var(--gold);margin:0}
-.sound{font-size:11px;color:var(--lav-3);display:inline-flex;gap:5px;align-items:center}
-.sound::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--gold);display:inline-block}
+.sound{font-size:11px;color:var(--lav-3);display:inline-flex;gap:5px;align-items:center;
+  background:none;border:none;cursor:pointer;font-family:var(--ui);padding:4px 2px}
+.sound .dot{width:7px;height:7px;border-radius:50%;background:var(--gold);display:inline-block;transition:background .2s}
+.sound.muted{color:var(--lav-4)}
+.sound.muted .dot{background:var(--lav-4)}
 
 .bar-wrap{margin:0 0 22px}
 .bar-key{display:flex;justify-content:space-between;font-size:11px;color:var(--lav-4);margin:0 0 6px}
