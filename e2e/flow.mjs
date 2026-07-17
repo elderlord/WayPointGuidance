@@ -57,6 +57,14 @@ try {
 
   // 3) 노드 0~3 순차 진행
   for (let i = 0; i < CONTENT.nodes.length; i++) {
+    // 이미 푼 이전 지점을 다시 스캔하면 이동하지 않고 피드백만(문항 튐 방지)
+    if (i >= 1) {
+      await page.fill("#token", `NSM-0${i}`);
+      await page.click('[data-act="token-submit"]');
+      await page.waitForFunction(() => document.querySelector("#scanMsg")?.textContent?.length > 0);
+      check(`이미 푼 지점 재스캔 차단 (노드 ${i})`, (await page.locator("#scanMsg").innerText()).includes("이미"));
+      check(`재스캔 후 스캔 화면 유지 (노드 ${i})`, (await page.locator("#token").count()) === 1);
+    }
     await page.fill("#token", `NSM-0${i + 1}`);
     await page.click('[data-act="token-submit"]');
     await page.waitForSelector("#opts .opt");
