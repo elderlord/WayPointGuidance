@@ -13,17 +13,17 @@ function bar(content, solved) {
     pct === 100 ? "✓" : ""
   }</span></div><div class="bar"><span style="width:${pct}%"></span></div></div>`;
 }
-function topbar(content, sound) {
-  return `<div class="top"><p class="brand">${esc(content.meta.title)}</p>${
-    sound ? '<span class="sound">소리 켜짐</span>' : ""
-  }</div>`;
+function topbar(content) {
+  // 소리 토글은 모든 화면에 노출. 실제 상태(켜짐/꺼짐)는 렌더 직후 app.updateSoundUI가 보정.
+  return `<div class="top"><p class="brand">${esc(content.meta.title)}</p>
+    <button class="sound" id="soundBtn" data-act="toggle-sound" aria-pressed="false"><span class="dot"></span><span id="soundLabel">소리 켜짐</span></button></div>`;
 }
 const restart = `<div class="spacer"></div><button class="restart" data-act="reset">처음부터 다시 시작</button>`;
 
 export function renderPrologue(content, state) {
   const p = content.prologue;
   return `
-    ${topbar(content, true)}
+    ${topbar(content)}
     <p class="eyebrow">${esc(p.eyebrow)}</p>
     <h1 class="title">${nl2br(p.title)}</h1>
     <div class="voice"><p>${nl2br(p.taunt)}</p></div>
@@ -39,7 +39,7 @@ export function renderPrologue(content, state) {
 /** 지점 사이 스캔 대기 화면 — 내장 카메라 + 수동 토큰 입력 폴백 */
 export function renderScanner(content, state) {
   return `
-    ${topbar(content, true)}
+    ${topbar(content)}
     ${bar(content, state.solved)}
     <p class="eyebrow">다음 제보 지점</p>
     <h1 class="title">현장의 QR을 비추어라</h1>
@@ -65,7 +65,7 @@ export function renderScanner(content, state) {
 export function renderNode(content, state, i) {
   const n = content.nodes[i];
   return `
-    ${topbar(content, true)}
+    ${topbar(content)}
     ${bar(content, state.solved)}
     <p class="eyebrow">${esc(n.eyebrow)}</p>
     <h1 class="title">${esc(n.title)}</h1>
@@ -94,7 +94,7 @@ export function renderNode(content, state, i) {
 export function renderFinale(content, state) {
   const f = content.finale;
   return `
-    ${topbar(content, false)}
+    ${topbar(content)}
     ${bar(content, state.solved)}
     <p class="eyebrow">${esc(f.eyebrow)}</p>
     <h1 class="title">${esc(f.title)}</h1>
@@ -120,7 +120,7 @@ export function renderFinale(content, state) {
 export function renderDone(content, state) {
   const d = content.done;
   return `
-    ${topbar(content, false)}
+    ${topbar(content)}
     ${bar(content, state.solved)}
     <div class="result">
       <p class="rl">${esc(d.resultLabel)}</p>
