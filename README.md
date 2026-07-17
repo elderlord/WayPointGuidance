@@ -53,10 +53,17 @@
 ## 구현 로드맵 (리팩터-포워드, 매 단계 배포 가능)
 
 - [x] 1. Baseline 배포 — 프로토타입 커밋 + Pages 설정
-- [ ] 2. 테스트 하네스 — 전체 흐름 스모크 테스트 (리팩터 안전망)
-- [ ] 3. 콘텐츠 분리 + 스키마 검증 (저작도구 토대)
-- [ ] 4. 상태 모듈 (버전 관리 localStorage)
-- [ ] 5. 진행 정책 모듈 (선형, 하이브리드 대비)
-- [ ] 6. 인앱 QR 스캐너 + NSM 토큰 매칭 + 선형 가드
-- [ ] 7. 뷰 모듈화 (인라인 핸들러 제거, 이벤트 위임)
-- [ ] 8. QR 토큰 생성 + 배포 문서
+- [x] 2. 테스트 하네스 — Node 단위(15) + Playwright e2e(23) 전체 흐름 검증
+- [x] 3. 콘텐츠 분리 + 스키마 검증 (`src/content.js`, `src/schema.js`)
+- [x] 4. 상태 모듈 (버전 관리 localStorage, `src/state.js`)
+- [x] 5. 진행 정책 모듈 (선형, 하이브리드 한 줄 스왑, `src/progression.js`)
+- [x] 6. 인앱 QR 스캐너 + NSM 토큰 매칭 + 선형 가드 (`src/scanner.js`, `src/tokens.js`)
+- [x] 7. 뷰 모듈화 (인라인 핸들러 제거, 이벤트 위임, `src/views.js`, `src/app.js`)
+- [ ] 8. QR 토큰 생성 + 현장 배치 문서 (NSM-0X → QR 이미지, 시작 QR)
+
+## 테스트
+
+```bash
+npm test                 # Node 순수 로직 단위 테스트
+node test/e2e.mjs         # Chromium 전체 흐름 e2e (선형 게이트·진행도·리셋)
+```
