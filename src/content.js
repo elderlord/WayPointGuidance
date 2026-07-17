@@ -19,9 +19,9 @@ export const CONTENT = {
     placeholderName: "국중곽 도깨비 사건 조사대",
     // 줄다리기 바: 완료 단계 수(0~5)에 따른 '과학' 비율(%)
     sciencePct: [12, 30, 48, 66, 84, 100],
-    // 밤 분위기 BGM. 지금은 placeholder 앰비언스.
+    // BGM. 지금은 테스트용 비프(3초 루프). 소리 동작 확인용.
     // TODO: 실제 음원 확정 시 이 파일만 교체(경로 유지).
-    audio: { bgm: "assets/audio/ambience.wav" },
+    audio: { bgm: "assets/audio/test-beep.wav" },
   },
 
   prologue: {
