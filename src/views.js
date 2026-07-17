@@ -20,6 +20,25 @@ function topbar(content) {
 }
 const restart = `<div class="spacer"></div><button class="restart" data-act="reset">처음부터 다시 시작</button>`;
 
+/** 인트로(첫 페이지) — 포스터 이미지 + 시작 버튼. 이미지 없으면 텍스트 스플래시로 폴백. */
+export function renderIntro(content) {
+  const it = content.intro || {};
+  return `
+    <div class="intro" id="intro">
+      <div class="intro-media">
+        <img class="intro-poster" id="introPoster" src="${esc(it.poster || "assets/poster.jpg")}"
+             alt="${esc(content.meta.title)} 포스터" />
+        <div class="intro-fallback">
+          <p class="intro-fb-brand">국립중앙과학관</p>
+          <h1 class="intro-fb-title">${nl2br(content.prologue?.title || content.meta.title)}</h1>
+          <p class="intro-fb-tag">${nl2br(it.fallbackTagline || "")}</p>
+          <p class="intro-fb-meta">${esc(it.fallbackMeta || "")}</p>
+        </div>
+      </div>
+      <button class="cta intro-cta" data-act="enter-intro">${esc(it.cta || "시작하기")}</button>
+    </div>`;
+}
+
 export function renderPrologue(content, state) {
   const p = content.prologue;
   return `

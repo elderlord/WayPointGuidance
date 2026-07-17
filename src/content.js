@@ -24,6 +24,15 @@ export const CONTENT = {
     audio: { bgm: "assets/audio/test-beep.wav" },
   },
 
+  // 인트로(첫 페이지) — 행사 포스터 + 시작 버튼
+  intro: {
+    poster: "assets/poster.jpg", // 실제 포스터 파일을 이 경로에 넣으면 표시됨
+    cta: "시작하기",
+    // 포스터 파일이 없을 때 대체 스플래시 텍스트
+    fallbackTagline: "설화 속 도깨비가 다시 깨어난다\n21세기 과학이 풀어주는 도깨비 미스터리",
+    fallbackMeta: "국립중앙과학관 · 2026.07.31–08.02",
+  },
+
   prologue: {
     eyebrow: "도깨비의 도전장",
     title: "도깨비가 과학관에\n찾아왔다",
