@@ -48,6 +48,10 @@ export function renderScanner(content, state) {
       <div class="scan-view" id="scanView" data-state="idle">
         <video id="scanVideo" playsinline muted></video>
         <div class="scan-frame"></div>
+        <svg class="scan-ring" id="scanRing" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+          <rect class="scan-ring-track" x="18" y="18" width="64" height="64" rx="7" ry="7"></rect>
+          <rect class="scan-ring-fill" id="scanRingFill" x="18" y="18" width="64" height="64" rx="7" ry="7" pathLength="100"></rect>
+        </svg>
         <p class="scan-status" id="scanStatus">카메라를 켜 QR을 비추세요</p>
       </div>
       <button class="cta ghost" data-act="scan-start" id="scanBtn">카메라 켜기</button>

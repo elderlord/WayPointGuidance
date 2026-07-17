@@ -41,6 +41,9 @@ function render() {
   else app.innerHTML = renderPrologue(content, state);
 
   updateSoundUI();
+  // 새 화면은 항상 맨 위에서 시작 — 결과 텍스트가 상단에 노출되도록
+  window.scrollTo(0, 0);
+  if (app.scrollTop) app.scrollTop = 0;
   if (s === "scan") setupScanner();
 }
 
@@ -69,7 +72,7 @@ function setupScanner() {
   if (video) {
     scanner = createScanner(
       video,
-      (token) => handleToken(token),
+      (token) => handleToken(token, true), // 카메라 스캔
       (msg) => setScanMsg(msg)
     );
     // 이전에 카메라를 켠 적 있으면(권한 이미 허용됨) 자동으로 다시 켜 스캔 재개
@@ -98,7 +101,7 @@ function setScanMsg(msg, kind) {
    현재 기대 지점(resolveEntry)과 일치하는 토큰에서만 이동한다.
    그 외(모르는 코드 · 이미 푼 지점 · 앞선 지점)는 이동하지 않고 피드백만 주며
    카메라는 계속 켜둔다 → 화면에 다른 QR이 잡혀도 문항이 튀지 않는다. */
-function handleToken(raw) {
+function handleToken(raw, viaScan) {
   const { ok, stage } = resolveToken(raw, tokenMap);
   const expected = resolveEntry(state, NODE_COUNT); // 지금 찾아야 할 지점
 
@@ -107,10 +110,9 @@ function handleToken(raw) {
     return;
   }
   if (stage === expected) {
-    stopScanner();
-    state.stage = stage;
-    saveState(state);
-    render();
+    // 카메라 스캔은 확인 링으로 인지 시간을 준 뒤 전환. 수동 입력은 즉시.
+    if (viaScan) confirmAndAdvance(stage);
+    else goToStage(stage);
     return;
   }
   // 알려진 토큰이지만 지금 순서가 아님 — 이동하지 않음
@@ -122,6 +124,44 @@ function handleToken(raw) {
   } else {
     setScanMsg("크큭, 성급하구나. 순서대로 오너라. 아직 이 표식의 차례가 아니다.", "err");
   }
+}
+
+const CONFIRM_MS = 1200; // 인식 확인 링 지속(인지 시간)
+
+function goToStage(stage) {
+  stopScanner();
+  state.stage = stage;
+  saveState(state);
+  render();
+}
+
+/* 인식 직후 즉시 전환하지 않고, 프레임 외곽을 시계방향으로 채우는 링으로
+   "인식됨"을 인지시킨 뒤 전환한다. */
+function confirmAndAdvance(stage) {
+  const view = document.getElementById("scanView");
+  const fill = document.getElementById("scanRingFill");
+  const status = document.getElementById("scanStatus");
+  if (!view || !fill) {
+    goToStage(stage);
+    return;
+  }
+  scanner?.pause(); // 디코딩만 멈추고 프리뷰는 유지
+  view.classList.add("confirming");
+  if (status) status.textContent = "표식을 확인했다…";
+  // 링 채우기 애니메이션 (dashoffset 100→0)
+  fill.style.transition = "none";
+  fill.style.strokeDashoffset = "100";
+  void fill.getBoundingClientRect(); // reflow
+  fill.style.transition = `stroke-dashoffset ${CONFIRM_MS}ms linear`;
+  fill.style.strokeDashoffset = "0";
+  let done = false;
+  const finish = () => {
+    if (done) return;
+    done = true;
+    goToStage(stage);
+  };
+  fill.addEventListener("transitionend", finish, { once: true });
+  setTimeout(finish, CONFIRM_MS + 300); // 폴백
 }
 
 /* ---------- 미션 응답 ---------- */
@@ -144,7 +184,7 @@ function handleAnswer(idx) {
     rv.classList.add("show");
     const span = document.querySelector(".bar>span");
     if (span) span.style.width = content.meta.sciencePct[Math.min(state.solved, 5)] + "%";
-    rv.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    rv.scrollIntoView({ behavior: "smooth", block: "start" });
   } else {
     const b = btns[idx];
     b.classList.add("wrong");
@@ -186,7 +226,7 @@ app.addEventListener("click", (e) => {
     const st = document.getElementById("scanStatus");
     if (st) st.textContent = "QR을 사각 안에 맞추세요…";
   } else if (act === "token-submit") {
-    handleToken(document.getElementById("token").value);
+    handleToken(document.getElementById("token").value, false);
   } else if (act === "answer") {
     handleAnswer(Number(el.dataset.i));
   } else if (act === "to-scan") {
@@ -206,7 +246,7 @@ app.addEventListener("click", (e) => {
 app.addEventListener("keydown", (e) => {
   if (e.key === "Enter" && e.target.id === "token") {
     e.preventDefault();
-    handleToken(e.target.value);
+    handleToken(e.target.value, false);
   }
 });
 

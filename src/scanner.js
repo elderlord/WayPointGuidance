@@ -68,10 +68,15 @@ export function createScanner(video, onResult, onError) {
     if (running) raf = requestAnimationFrame(tick); // onResult가 stop 했으면 재예약 안 함
   }
 
-  function stop() {
+  // 디코딩만 멈추고 카메라 프리뷰는 유지(확인 링 애니메이션 동안 화면이 검게 되지 않도록)
+  function pause() {
     running = false;
     if (raf) cancelAnimationFrame(raf);
     raf = 0;
+  }
+
+  function stop() {
+    pause();
     if (stream) {
       stream.getTracks().forEach((t) => t.stop());
       stream = null;
@@ -79,5 +84,5 @@ export function createScanner(video, onResult, onError) {
     if (video) video.srcObject = null;
   }
 
-  return { start, stop, isRunning: () => running };
+  return { start, pause, stop, isRunning: () => running };
 }
