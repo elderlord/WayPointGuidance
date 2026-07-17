@@ -10,6 +10,7 @@ import { buildTokenMap, resolveToken } from "./tokens.js";
 import { createScanner, scannerSupported } from "./scanner.js";
 import { initAudio, startAudio, toggleMuted, isMuted } from "./audio.js";
 import {
+  renderIntro,
   renderPrologue,
   renderScanner,
   renderNode,
@@ -33,7 +34,8 @@ const app = document.getElementById("app");
 function render() {
   stopScanner();
   const s = state.stage;
-  if (s === "prologue") app.innerHTML = renderPrologue(content, state);
+  if (s === "intro") app.innerHTML = renderIntro(content);
+  else if (s === "prologue") app.innerHTML = renderPrologue(content, state);
   else if (s === "scan") app.innerHTML = renderScanner(content, state);
   else if (s === "finale") app.innerHTML = renderFinale(content, state);
   else if (s === "done") app.innerHTML = renderDone(content, state);
@@ -45,6 +47,17 @@ function render() {
   window.scrollTo(0, 0);
   if (app.scrollTop) app.scrollTop = 0;
   if (s === "scan") setupScanner();
+  if (s === "intro") setupIntro();
+}
+
+/* 포스터 이미지가 없으면 텍스트 스플래시로 폴백 표시 */
+function setupIntro() {
+  const wrap = document.getElementById("intro");
+  const img = document.getElementById("introPoster");
+  if (!wrap || !img) return;
+  const fallback = () => wrap.classList.add("no-poster");
+  if (img.complete && img.naturalWidth === 0) fallback();
+  img.addEventListener("error", fallback, { once: true });
 }
 
 /* 소리 토글 버튼의 표시 상태를 현재 오디오 상태로 보정 */
@@ -213,6 +226,12 @@ app.addEventListener("click", (e) => {
     updateSoundUI();
     return;
   }
+  if (act === "enter-intro") {
+    state.stage = "prologue";
+    saveState(state);
+    render();
+    return;
+  }
   if (act === "start") {
     const v = (document.getElementById("name").value || "").trim();
     state.name = v || content.meta.placeholderName;
@@ -260,6 +279,7 @@ if (!check.ok) {
   initAudio(content.meta.audio?.bgm);
   // 저장된 stage가 정책상 접근 불가하면 갈 수 있는 지점으로 되돌림
   if (
+    state.stage !== "intro" &&
     state.stage !== "prologue" &&
     state.stage !== "scan" &&
     !canAccess(state.stage, state, NODE_COUNT)

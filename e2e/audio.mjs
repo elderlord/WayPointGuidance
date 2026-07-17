@@ -40,21 +40,27 @@ const currentTime = () => page.evaluate(() => window.__audio?.currentTime() ?? -
 
 try {
   await page.goto(base + "/", { waitUntil: "networkidle" });
+  await page.waitForSelector('[data-act="enter-intro"]');
 
-  // 1) 부팅: 소스 준비됐고, 제스처 전엔 재생 안 함
+  // 1) 부팅(인트로): 소스 준비됐고, 제스처 전엔 재생 안 함
   let a = await audio();
   check("BGM 소스 로드됨", a.hasSource === true);
   check("제스처 전 재생 안 함", a.started === false && a.playing === false);
   check("기본 음소거 아님", a.muted === false);
-  check("상단 소리 버튼 '켜짐'", (await page.locator("#soundLabel").innerText()) === "소리 켜짐");
 
-  // 2) 첫 제스처(이름 입력 후 시작) → 재생 시작
-  await page.fill("#name", "소리테스터");
-  await page.click('[data-act="start"]');
+  // 2) 첫 제스처(인트로 시작) → 재생 시작, 프롤로그로
+  await page.click('[data-act="enter-intro"]');
+  await page.waitForSelector("#name");
   await sleep(600);
   a = await audio();
   check("제스처 후 재생 시작", a.started === true && a.playing === true);
   check("재생 위치 진행됨(currentTime>0)", (await currentTime()) > 0);
+  check("상단 소리 버튼 '켜짐'", (await page.locator("#soundLabel").innerText()) === "소리 켜짐");
+
+  // 프롤로그: 이름 입력 후 시작 → 스캔 화면
+  await page.fill("#name", "소리테스터");
+  await page.click('[data-act="start"]');
+  await page.waitForSelector("#token");
 
   // 3) 소리 끄기 → 정지 + 라벨 변경
   await page.click('[data-act="toggle-sound"]');

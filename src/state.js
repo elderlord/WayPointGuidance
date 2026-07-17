@@ -12,7 +12,7 @@ export const STORAGE_KEY = "gukjunggwak_dokkaebi_v1";
 export const STATE_VERSION = 1;
 
 export function freshState() {
-  return { v: STATE_VERSION, name: "", solved: 0, stage: "prologue" };
+  return { v: STATE_VERSION, name: "", solved: 0, stage: "intro" };
 }
 
 function getStorage(storage) {

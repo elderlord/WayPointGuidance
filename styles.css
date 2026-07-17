@@ -125,3 +125,19 @@ h1.title{font-family:var(--voice);font-size:26px;font-weight:700;color:var(--ink
 
 @keyframes rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* intro (첫 페이지) — 포스터 + 시작 버튼 */
+.intro{min-height:calc(100dvh - 50px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px}
+.intro-media{width:100%;position:relative;display:flex;align-items:center;justify-content:center}
+.intro-poster{width:100%;max-width:100%;max-height:74dvh;object-fit:contain;border-radius:10px;
+  box-shadow:0 8px 30px rgba(0,0,0,.5);display:block;animation:rise .5s ease both}
+.intro.no-poster .intro-poster{display:none}
+.intro-fallback{display:none}
+.intro.no-poster .intro-fallback{display:flex;flex-direction:column;align-items:center;text-align:center;
+  gap:10px;padding:44px 18px;border:0.5px solid var(--line);border-radius:14px;background:var(--card);width:100%;
+  animation:rise .5s ease both}
+.intro-fb-brand{font-size:12px;letter-spacing:.14em;color:var(--gold);margin:0}
+.intro-fb-title{font-family:var(--voice);font-size:30px;font-weight:700;color:var(--ink);margin:6px 0;line-height:1.3}
+.intro-fb-tag{font-family:var(--voice);font-size:15px;color:var(--lav-2);line-height:1.85;margin:0}
+.intro-fb-meta{font-size:12px;color:var(--lav-3);margin:10px 0 0}
+.intro-cta{width:100%;margin-top:0}

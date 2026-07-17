@@ -41,6 +41,12 @@ page.on("pageerror", (e) => errors.push(String(e)));
 try {
   await page.goto(base + "/", { waitUntil: "networkidle" });
 
+  // 0) 인트로(포스터 + 시작)
+  await page.waitForSelector('[data-act="enter-intro"]');
+  check("인트로 렌더", (await page.locator(".intro-cta").count()) === 1);
+  await page.click('[data-act="enter-intro"]');
+  await page.waitForSelector("#name");
+
   // 1) 프롤로그
   check("프롤로그 렌더", await page.locator("h1.title").innerText().then((t) => t.includes("도깨비가 과학관")));
   await page.fill("#name", "테스트조사관");
@@ -100,10 +106,10 @@ try {
   check("교환코드 표시", (await page.locator(".code .cv").innerText()).includes(CONTENT.meta.rewardCode));
   check("이름 반영", (await page.locator(".badge .bn").innerText()).includes("테스트조사관"));
 
-  // 6) 리셋
+  // 6) 리셋 → 인트로로
   await page.click('[data-act="reset"]');
-  await page.waitForSelector("#name");
-  check("리셋→프롤로그", (await page.locator("#name").count()) === 1);
+  await page.waitForSelector('[data-act="enter-intro"]');
+  check("리셋→인트로", (await page.locator(".intro-cta").count()) === 1);
 
   check("페이지 JS 에러 없음", errors.length === 0);
   if (errors.length) console.log("PAGE ERRORS:", errors);
