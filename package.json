@@ -1,0 +1,16 @@
+{
+  "name": "waypoint-guidance",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "기묘한 국중곽 : 21세기 도깨비 — QR 웨이포인트 스토리텔링 웹앱",
+  "scripts": {
+    "test": "node --test",
+    "test:e2e": "node e2e/flow.mjs"
+  },
+  "devDependencies": {
+    "playwright-core": "^1.49.0",
+    "pngjs": "^7.0.0",
+    "qrcode": "^1.5.4"
+  }
+}
