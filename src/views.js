@@ -134,7 +134,7 @@ export function renderFinale(content, state) {
     <div id="reveal" class="reveal-box">
       <p class="r-label">최 후 의 규 명</p>
       <div class="reveal">${esc(f.reveal)}</div>
-      <div class="react"><p>${esc(f.concession)}</p></div>
+      <div class="react"><p>${esc(f.concession).replaceAll("{name}", esc(state.name))}</p></div>
       <button class="cta" data-act="finish">담력왕 인증받기</button>
     </div>
     ${restart}`;
