@@ -100,6 +100,7 @@ try {
   check("finale 렌더", await page.locator("h1.title").innerText().then((t) => t.includes(CONTENT.finale.title)));
   await page.locator("#opts .opt").nth(correctIdx(CONTENT.finale.options)).click();
   await page.waitForSelector("#reveal.show");
+  check("클라이맥스 승복에 이름 연동", (await page.locator("#reveal .react").innerText()).includes("테스트조사관"));
   await page.click('[data-act="finish"]');
   await page.waitForSelector(".code .cv");
   check("담력왕 배지", (await page.locator(".badge .bt").innerText()).includes("담력왕"));
