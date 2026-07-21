@@ -8,7 +8,7 @@ import { fileURLToPath } from "node:url";
 import { chromium } from "playwright-core";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const MIME = { ".html": "text/html", ".js": "text/javascript", ".css": "text/css", ".wav": "audio/wav", ".svg": "image/svg+xml" };
+const MIME = { ".html": "text/html", ".js": "text/javascript", ".css": "text/css", ".wav": "audio/wav", ".mp3": "audio/mpeg", ".svg": "image/svg+xml" };
 const server = http.createServer((req, res) => {
   let p = decodeURIComponent(req.url.split("?")[0]);
   if (p === "/") p = "/index.html";
@@ -45,6 +45,7 @@ try {
   // 1) 부팅(인트로): 소스 준비됐고, 제스처 전엔 재생 안 함
   let a = await audio();
   check("BGM 소스 로드됨", a.hasSource === true);
+  check("무한 반복(loop=true)", await page.evaluate(() => window.__audio?.loop() === true));
   check("제스처 전 재생 안 함", a.started === false && a.playing === false);
   check("기본 음소거 아님", a.muted === false);
 
