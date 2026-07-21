@@ -20,9 +20,8 @@ export const CONTENT = {
     // 줄다리기 바: 완료 단계 수(0~5)에 따른 '과학' 비율(%)
     // 조화 3개: solved 0→10, 1(흔적)→40, 2(소리)→72, 3(불빛/완주)→100
     sciencePct: [10, 40, 72, 100, 100, 100],
-    // 밤 분위기 BGM. 지금은 테스트용 비프(3초 루프). 소리 동작 확인용.
-    // TODO: 실제 음원 확정 시 이 파일만 교체(경로 유지).
-    audio: { bgm: "assets/audio/test-beep.wav" },
+    // 밤 분위기 BGM (무한 반복). audio.js가 loop=true로 재생.
+    audio: { bgm: "assets/audio/bgm.mp3" },
   },
 
   // 인트로(첫 페이지) — 행사 포스터 + 시작 버튼

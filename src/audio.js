@@ -43,6 +43,7 @@ export function initAudio(src) {
       isPlaying: () => !!el && !el.paused,
       hasSource: () => !!el,
       currentTime: () => (el ? el.currentTime : -1),
+      loop: () => (el ? el.loop : false),
     };
   }
 }
