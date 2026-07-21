@@ -94,10 +94,10 @@ try {
   check("새로고침 후 진행도 유지(스캔 복귀)", (await page.locator("#token").count()) === 1);
 
   // 5) 클라이맥스 → 담력왕
-  await page.fill("#token", "NSM-05");
+  await page.fill("#token", CONTENT.finale.token);
   await page.click('[data-act="token-submit"]');
   await page.waitForSelector("#opts .opt");
-  check("finale 렌더", await page.locator("h1.title").innerText().then((t) => t.includes("도깨비를 마주")));
+  check("finale 렌더", await page.locator("h1.title").innerText().then((t) => t.includes(CONTENT.finale.title)));
   await page.locator("#opts .opt").nth(correctIdx(CONTENT.finale.options)).click();
   await page.waitForSelector("#reveal.show");
   await page.click('[data-act="finish"]');
