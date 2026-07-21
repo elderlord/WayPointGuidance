@@ -112,6 +112,7 @@ h1.title{font-family:var(--voice);font-size:26px;font-weight:700;color:var(--ink
 .code .cl{font-size:11px;letter-spacing:.14em;color:var(--lav-3);margin:0 0 6px}
 .code .cv{font-size:23px;font-weight:700;letter-spacing:.22em;color:var(--ink);margin:0;font-family:ui-monospace,monospace}
 .gift{font-size:12px;line-height:1.6;color:var(--lav-3);text-align:center;margin:0}
+.gift-limit{font-size:11px;color:var(--gold);text-align:center;margin:6px 0 0;letter-spacing:.02em}
 
 /* primary button */
 .cta{width:100%;margin-top:18px;background:var(--gold);border:none;border-radius:10px;color:#1a1726;

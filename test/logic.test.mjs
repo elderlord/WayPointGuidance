@@ -39,10 +39,10 @@ test("토큰 정규화: 대소문자/하이픈/자릿수 보정", () => {
   assert.equal(normalizeToken("nsm-05"), "NSM-05");
 });
 
-test("토큰 매칭: NSM-01→0, NSM-05→finale, 미지→ok:false", () => {
+test("토큰 매칭: NSM-01→0, NSM-03→finale, 미지→ok:false", () => {
   const map = buildTokenMap(CONTENT);
   assert.deepEqual(resolveToken("NSM-01", map), { ok: true, stage: 0, token: "NSM-01" });
-  assert.deepEqual(resolveToken("nsm5", map), { ok: true, stage: "finale", token: "NSM-05" });
+  assert.deepEqual(resolveToken("nsm3", map), { ok: true, stage: "finale", token: "NSM-03" });
   assert.equal(resolveToken("XXX-99", map).ok, false);
 });
 
@@ -75,7 +75,7 @@ test("선형: finale는 모든 노드 규명 후에만", () => {
 test("하이브리드: 노드는 순서 무관, finale만 잠금", () => {
   setPolicy("hybrid");
   const s = { name: "탐정", solved: 0, stage: "scan", v: 1 };
-  assert.equal(canAccess(2, s, N), true); // 건너뛰어도 접근 가능
+  assert.equal(canAccess(N - 1, s, N), true); // 마지막 노드로 건너뛰어도 접근 가능
   assert.equal(canAccess("finale", s, N), false);
   setPolicy("linear"); // 원복
 });

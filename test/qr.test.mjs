@@ -34,9 +34,7 @@ test("각 지점 QR이 올바른 토큰→지점으로 디코드된다", () => {
   const expect = [
     ["NSM-01.png", "NSM-01", 0],
     ["NSM-02.png", "NSM-02", 1],
-    ["NSM-03.png", "NSM-03", 2],
-    ["NSM-04.png", "NSM-04", 3],
-    ["NSM-05.png", "NSM-05", "finale"],
+    ["NSM-03.png", "NSM-03", "finale"],
   ];
   for (const [file, token, stage] of expect) {
     const decoded = decode(file);

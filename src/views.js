@@ -159,5 +159,6 @@ export function renderDone(content, state) {
       <p class="cv">${esc(content.meta.rewardCode)}</p>
     </div>
     <p class="gift">${esc(d.giftNote)}</p>
+    ${d.giftLimit ? `<p class="gift-limit">${esc(d.giftLimit)}</p>` : ""}
     ${restart}`;
 }
