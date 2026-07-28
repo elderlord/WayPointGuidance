@@ -114,7 +114,7 @@ export const CONTENT = {
     badgeTitle: "담력왕 인증",
     codeLabel: "선물 교환 코드",
     giftNote: "체험존 안내데스크에서 이 코드를 보여주세요",
-    giftLimit: "1일 200명 한정",
+    giftLimit: "1일 100명 한정",
   },
 
   // 오답 시 도깨비 반응(무작위) — 정답을 흘리지 않고 되묻기
