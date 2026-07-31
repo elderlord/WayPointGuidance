@@ -122,6 +122,7 @@ export function renderFinale(content, state) {
     <p class="eyebrow">${esc(f.eyebrow)}</p>
     <h1 class="title">${esc(f.title)}</h1>
     <div class="voice"><p>${nl2br(f.climax)}</p></div>
+    ${f.tale ? `<p class="tale-label">목 격 담</p><p class="tale">${nl2br(f.tale)}</p>` : ""}
     ${f.onsite ? `<div class="onsite"><b>현장</b> · ${esc(f.onsite)}</div>` : ""}
     <div class="mission">
       <p class="m-q">${esc(f.question)}</p>
